@@ -1,2 +1,4 @@
-cmake --build build --config Debug --target all -- -j 20
+#!/bin/bash
+
+bash scripts/build.sh
 ./build/sdl2
