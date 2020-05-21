@@ -1,32 +1,54 @@
 #include <iostream>
 #include <SDL.h>
 
-SDL_Window *g_pWindow = 0;
-SDL_Renderer *g_pRenderer = 0;
+bool gameRunning = false;
+SDL_Window *gameWindow = 0;
+SDL_Renderer *gameRenderer = 0;
 
-int main(int argc, char *args[])
+bool init(const char *title, int xpos, int ypos, int height, int width, int flags)
 {
-  // std::cout << "Hello, world!\n";
+  // Initialize SDL
   if (SDL_Init(SDL_INIT_EVERYTHING) >= 0)
   {
-    g_pWindow = SDL_CreateWindow("Asdf", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 600, 500, SDL_WINDOW_SHOWN);
+    gameWindow = SDL_CreateWindow(title, xpos, ypos, height, width, flags);
 
-    if (g_pWindow != 0)
+    if (gameWindow != 0)
     {
-      g_pRenderer = SDL_CreateRenderer(g_pWindow, -1, 0);
+      gameRenderer = SDL_CreateRenderer(gameWindow, -1, 0);
     }
-    else
-    {
-      std::cout << "SDL Could not initialize\n";
-      return 1;
-    }
+  }
+  else
+  {
+    std::cout << "SDL did not initialize\n";
+    return false;
+  }
 
-    SDL_SetRenderDrawColor(g_pRenderer, 0, 0, 0, 255);
-    SDL_RenderPresent(g_pRenderer);
+  return true;
+}
 
-    SDL_Delay(5000);
-    SDL_Quit();
+void render()
+{
+  SDL_SetRenderDrawColor(gameRenderer, 0, 0, 0, 255);
 
-    return 0;
+  SDL_RenderClear(gameRenderer);
+
+  SDL_RenderPresent(gameRenderer);
+}
+
+int main(int argc, char *argv[])
+{
+  if (init("Game Window", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480, SDL_WINDOW_SHOWN))
+  {
+    gameRunning = true;
+  }
+  else
+  {
+    std::cout << "Something went wrong initializing this game\n";
+    return 1;
+  }
+
+  while (gameRunning)
+  {
+    render();
   }
 }
